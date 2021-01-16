@@ -305,18 +305,18 @@ const createRoutes = (app: express.Express): void => {
 	 */
 	app.post(
 		"/api/service",
-		passport.authenticate("jwt", { session: false }),
+		//passport.authenticate("jwt", { session: false }),
 		serviceCtrl.create,
 	) //Добавление Сервисы
 	app.get("/api/service", serviceCtrl.show) //Показать Сервисы
 	app.put(
 		"/api/service/:id",
-		passport.authenticate("jwt", { session: false }),
+		//passport.authenticate("jwt", { session: false }),
 		serviceCtrl.update,
 	) //Редактировать Сервисы
 	app.delete(
 		"/api/service/:id",
-		passport.authenticate("jwt", { session: false }),
+		//passport.authenticate("jwt", { session: false }),
 		serviceCtrl.delete,
 	) //Удалить Сервисы
 
