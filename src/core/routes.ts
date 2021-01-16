@@ -5,6 +5,10 @@ import webPush from "web-push"
 import { aboutCtrl } from "../controllers/aboutControllers"
 import { homeCtrl } from "../controllers/homeControllers"
 import { notifyCtrl } from "../controllers/notifyControllers"
+import { portfolioCtrl } from "../controllers/portfolioControllers"
+import { serviceCtrl } from "../controllers/serviceControllers"
+import { sitetypeCtrl } from "../controllers/sitetypeControllers"
+import { subserviceCtrl } from "../controllers/subserviceControllers"
 import { userCtrl } from "../controllers/userControllers"
 import { validRegist } from "../validators/validForm"
 import { passport } from "./passport"
@@ -18,15 +22,15 @@ const createRoutes = (app: express.Express): void => {
 	/**
 	 * Хранилища, для загружаемых файлов
 	 */
-	const storageAvatar = multer.diskStorage({
+	const storageFiles = multer.diskStorage({
 		destination: (req, file, cb): void => {
-			cb(null, "upload/avatar")
+			cb(null, "upload")
 		},
 		filename: (req, file, cb): void => {
 			cb(null, `${Date.now()}_${file.originalname}`)
 		},
 	})
-	let uploadAvatar = multer({ storage: storageAvatar })
+	let uploadFiles = multer({ storage: storageFiles })
 
 	app.use("/", express.static(path.join("client")))
 
@@ -101,9 +105,9 @@ const createRoutes = (app: express.Express): void => {
 	 * Роуты загрузки файлов
 	 */
 	app.post(
-		"/api/attachments/avatar",
-		passport.authenticate("jwt", { session: false }),
-		uploadAvatar.single("file"),
+		"/api/attachments",
+		//passport.authenticate("jwt", { session: false }),
+		uploadFiles.single("file"),
 		async (req: express.Request, res: express.Response): Promise<void> => {
 			try {
 				const file = req.file
@@ -231,7 +235,7 @@ const createRoutes = (app: express.Express): void => {
 	app.get("/api/about", aboutCtrl.show) //Показать О Нас
 	app.put(
 		"/api/about/:id",
-		passport.authenticate("jwt", { session: false }),
+		//passport.authenticate("jwt", { session: false }),
 		aboutCtrl.update,
 	) //Редактировать О Нас
 	app.delete(
@@ -249,16 +253,92 @@ const createRoutes = (app: express.Express): void => {
 		homeCtrl.create,
 	) //Добавление Главной
 	app.get("/api/home", homeCtrl.show) //Показать Главной
-	app.put(
-		"/api/home/:id",
-		passport.authenticate("jwt", { session: false }),
-		homeCtrl.update,
-	) //Редактировать Главной
+	app.put("/api/home/:id", homeCtrl.update) //Редактировать Главной
 	app.delete(
 		"/api/home/:id",
 		passport.authenticate("jwt", { session: false }),
 		homeCtrl.delete,
 	) //Удалить Главной
+
+	/**
+	 * Портфолио
+	 */
+	app.post(
+		"/api/portfolio",
+		//passport.authenticate("jwt", { session: false }),
+		portfolioCtrl.create,
+	) //Добавление Портфолио
+	app.get("/api/portfolio", portfolioCtrl.show) //Показать Портфолио
+	app.put(
+		"/api/portfolio/:id",
+		//passport.authenticate("jwt", { session: false }),
+		portfolioCtrl.update,
+	) //Редактировать Портфолио
+	app.delete(
+		"/api/portfolio/:id",
+		//passport.authenticate("jwt", { session: false }),
+		portfolioCtrl.delete,
+	) //Удалить Портфолио
+
+	/**
+	 * Саб Сервисы
+	 */
+	app.post(
+		"/api/subservice",
+		passport.authenticate("jwt", { session: false }),
+		subserviceCtrl.create,
+	) //Добавление Саб Сервисы
+	app.get("/api/subservice", subserviceCtrl.show) //Показать Саб Сервисы
+	app.put(
+		"/api/subservice/:id",
+		passport.authenticate("jwt", { session: false }),
+		subserviceCtrl.update,
+	) //Редактировать Саб Сервисы
+	app.delete(
+		"/api/subservice/:id",
+		passport.authenticate("jwt", { session: false }),
+		subserviceCtrl.delete,
+	) //Удалить Саб Сервисы
+
+	/**
+	 * Сервисы
+	 */
+	app.post(
+		"/api/service",
+		passport.authenticate("jwt", { session: false }),
+		serviceCtrl.create,
+	) //Добавление Сервисы
+	app.get("/api/service", serviceCtrl.show) //Показать Сервисы
+	app.put(
+		"/api/service/:id",
+		passport.authenticate("jwt", { session: false }),
+		serviceCtrl.update,
+	) //Редактировать Сервисы
+	app.delete(
+		"/api/service/:id",
+		passport.authenticate("jwt", { session: false }),
+		serviceCtrl.delete,
+	) //Удалить Сервисы
+
+	/**
+	 * Типы сайтов
+	 */
+	app.post(
+		"/api/sitetype",
+		passport.authenticate("jwt", { session: false }),
+		sitetypeCtrl.create,
+	) //Добавление Типы сайтов
+	app.get("/api/sitetype", sitetypeCtrl.show) //Показать Типы сайтов
+	app.put(
+		"/api/sitetype/:id",
+		passport.authenticate("jwt", { session: false }),
+		sitetypeCtrl.update,
+	) //Редактировать Типы сайтов
+	app.delete(
+		"/api/sitetype/:id",
+		passport.authenticate("jwt", { session: false }),
+		sitetypeCtrl.delete,
+	) //Удалить Типы сайтов
 
 	/**
 	 * Пуш уведомления

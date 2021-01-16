@@ -1,14 +1,14 @@
 import { Request, Response } from "express"
-import aboutModel, { IAbout } from "../models/aboutModels"
+import subserviceModel, { ISubService } from "../models/subserviceModels"
 
-class aboutControllers {
+class subserviceControllers {
 	create = async (req: Request, res: Response): Promise<void> => {
 		try {
-			const data: IAbout = req.body
-			const about = await aboutModel.create(data)
+			const data: ISubService = req.body
+			const subservice = await subserviceModel.create(data)
 			res.status(201).json({
 				status: "success",
-				data: about,
+				data: subservice,
 			})
 		} catch (err) {
 			res.status(500).json({
@@ -18,17 +18,12 @@ class aboutControllers {
 		}
 	}
 
-	show = async (req: Request, res: Response): Promise<void> => {
+	show = async (_: any, res: Response): Promise<void> => {
 		try {
-			const about = await aboutModel.find({}).exec()
-			const data: IAbout = req.body
-			let seedAbout
-			if (!about || about.length <= 0) {
-				seedAbout = await aboutModel.create(data)
-			}
+			const subservice = await subserviceModel.find({}).exec()
 			res.status(200).json({
 				status: "success",
-				data: about || seedAbout,
+				data: subservice,
 			})
 		} catch (err) {
 			res.status(500).json({
@@ -41,11 +36,11 @@ class aboutControllers {
 	update = async (req: Request, res: Response): Promise<void> => {
 		try {
 			const id = req.params.id
-			const data: IAbout = req.body
-			const about = await aboutModel
+			const data: ISubService = req.body
+			const subservice = await subserviceModel
 				.findOneAndUpdate({ _id: id }, data, { new: true })
 				.exec()
-			if (!about) {
+			if (!subservice) {
 				res.status(404).json({
 					status: "Error",
 					message: "Данные О Нас отсутствуют",
@@ -54,7 +49,7 @@ class aboutControllers {
 			}
 			res.status(200).json({
 				status: "success",
-				data: about,
+				data: subservice,
 			})
 		} catch (err) {
 			res.status(500).json({
@@ -66,10 +61,12 @@ class aboutControllers {
 	delete = async (req: Request, res: Response): Promise<void> => {
 		try {
 			const id = req.params.id
-			const about = await aboutModel.findOneAndDelete({ _id: id }).exec()
+			const subservice = await subserviceModel
+				.findOneAndDelete({ _id: id })
+				.exec()
 			res.status(200).json({
 				status: "success",
-				data: about,
+				data: subservice,
 			})
 		} catch (err) {
 			res.status(500).json({
@@ -80,4 +77,4 @@ class aboutControllers {
 	}
 }
 
-export const aboutCtrl = new aboutControllers()
+export const subserviceCtrl = new subserviceControllers()

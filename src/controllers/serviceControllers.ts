@@ -1,14 +1,14 @@
 import { Request, Response } from "express"
-import aboutModel, { IAbout } from "../models/aboutModels"
+import serviceModel, { IService } from "../models/serviceModels"
 
-class aboutControllers {
+class serviceControllers {
 	create = async (req: Request, res: Response): Promise<void> => {
 		try {
-			const data: IAbout = req.body
-			const about = await aboutModel.create(data)
+			const data: IService = req.body
+			const service = await serviceModel.create(data)
 			res.status(201).json({
 				status: "success",
-				data: about,
+				data: service,
 			})
 		} catch (err) {
 			res.status(500).json({
@@ -18,17 +18,12 @@ class aboutControllers {
 		}
 	}
 
-	show = async (req: Request, res: Response): Promise<void> => {
+	show = async (_: any, res: Response): Promise<void> => {
 		try {
-			const about = await aboutModel.find({}).exec()
-			const data: IAbout = req.body
-			let seedAbout
-			if (!about || about.length <= 0) {
-				seedAbout = await aboutModel.create(data)
-			}
+			const service = await serviceModel.find({}).populate("subService").exec()
 			res.status(200).json({
 				status: "success",
-				data: about || seedAbout,
+				data: service,
 			})
 		} catch (err) {
 			res.status(500).json({
@@ -41,11 +36,11 @@ class aboutControllers {
 	update = async (req: Request, res: Response): Promise<void> => {
 		try {
 			const id = req.params.id
-			const data: IAbout = req.body
-			const about = await aboutModel
+			const data: IService = req.body
+			const service = await serviceModel
 				.findOneAndUpdate({ _id: id }, data, { new: true })
 				.exec()
-			if (!about) {
+			if (!service) {
 				res.status(404).json({
 					status: "Error",
 					message: "Данные О Нас отсутствуют",
@@ -54,7 +49,7 @@ class aboutControllers {
 			}
 			res.status(200).json({
 				status: "success",
-				data: about,
+				data: await service.populate("subService").execPopulate(),
 			})
 		} catch (err) {
 			res.status(500).json({
@@ -66,10 +61,10 @@ class aboutControllers {
 	delete = async (req: Request, res: Response): Promise<void> => {
 		try {
 			const id = req.params.id
-			const about = await aboutModel.findOneAndDelete({ _id: id }).exec()
+			const service = await serviceModel.findOneAndDelete({ _id: id }).exec()
 			res.status(200).json({
 				status: "success",
-				data: about,
+				data: service,
 			})
 		} catch (err) {
 			res.status(500).json({
@@ -80,4 +75,4 @@ class aboutControllers {
 	}
 }
 
-export const aboutCtrl = new aboutControllers()
+export const serviceCtrl = new serviceControllers()
