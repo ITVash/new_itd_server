@@ -37,8 +37,39 @@ class serviceControllers {
 		try {
 			const id = req.params.id
 			const data: IService = req.body
+
 			const service = await serviceModel
 				.findOneAndUpdate({ _id: id }, data, { new: true })
+				.exec()
+			if (!service) {
+				res.status(404).json({
+					status: "Error",
+					message: "Данные О Нас отсутствуют",
+				})
+				return
+			}
+			res.status(200).json({
+				status: "success",
+				data: await service.populate("subService").execPopulate(),
+			})
+		} catch (err) {
+			res.status(500).json({
+				status: "Error",
+				message: `Ошибка работы сервера. ${err}`,
+			})
+		}
+	}
+	updateSub = async (req: Request, res: Response): Promise<void> => {
+		try {
+			const id = req.params.id
+			const data: IService = req.body
+
+			const service = await serviceModel
+				.findOneAndUpdate(
+					{ _id: id },
+					{ $push: { subServic: data.subService } },
+					{ new: true },
+				)
 				.exec()
 			if (!service) {
 				res.status(404).json({

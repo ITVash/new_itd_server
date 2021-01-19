@@ -11,7 +11,7 @@ export const sendEmail = (
 ) => {
 	mail.sendMail(
 		{
-			from: "Донецк Сити <max.zolotof@mail.ru>",
+			from: "ITD Company <max.zolotof@mail.ru>",
 			to: mailTo,
 			subject: subject,
 			text: "Сообщение с сайта",
