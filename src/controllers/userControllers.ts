@@ -58,6 +58,19 @@ class userControllers {
 		try {
 			const user = await userModel.find({}).exec()
 			if (user.length <= 0) {
+				const dataAdmin: IUser = {
+					login: "Admin",
+					confirm: true,
+					email: "itdwebcompany@gmail.com",
+					confirmed_hash: generateMD5(
+						process.env.SECRET_KEY + Math.random().toString() ||
+							Math.random().toString(),
+					),
+					password: generateMD5(
+						"Y@ledyjqY@gbkmybr2020" + process.env.SECRET_KEY,
+					),
+				}
+				await userModel.create(dataAdmin)
 				res.status(200).json({
 					status: "Error",
 					message: "Таблица пользователей пуста!",
@@ -122,6 +135,7 @@ class userControllers {
 	signIn = async (req: Request, res: Response): Promise<void> => {
 		try {
 			const user = req.user ? (req.user as IUserModel).toJSON() : undefined
+
 			res.status(200).json({
 				status: "success",
 				data: {
