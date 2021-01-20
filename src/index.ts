@@ -34,7 +34,6 @@ const PORT: number = Number(process.env.PORT) || 5051
 
 serv.listen(PORT, host, () => {
 	console.log(`Сервер запущен по адресу: http://${host}:${PORT}`)
-	//console.log('Адресс: ', serv.address().address)
 })
 serv.on("listening", () => {
 	const address = serv.address()
