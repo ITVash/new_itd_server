@@ -194,7 +194,6 @@ class userControllers {
 				console.log("Вы не авторизованны")
 				return
 			}
-			console.log("user", req.user)
 			res.status(200).json({
 				status: "success",
 				data: req.user,
